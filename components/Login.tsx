@@ -1,33 +1,16 @@
-import { login } from '@/features/auth/authSlice';
-import { RootState } from '@/store/store';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 interface LoginProps {
-  onCreatePlayer: (playerId: number) => void;
+  onLogin: (playerName: string) => void;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
-const Login: React.FC<LoginProps> = ({ onCreatePlayer }) => {
+const Login: React.FC<LoginProps> = ({ onLogin, status, error }) => {
   const [playerName, setPlayerName] = useState<string>('');
-  const dispatch = useDispatch();
-  const { user, status, error } = useSelector((state: RootState) => state.auth);
 
   const handleCreatePlayer = async () => {
-    if (playerName.trim() === '') {
-      alert('Please enter a valid name.');
-      return;
-    }
-
-    // Dispatch the login action with the player's name
-    const action = await dispatch(login(playerName));
-
-    // Check if the login action was fulfilled
-    if (login.fulfilled.match(action)) {
-      const playerId = action.payload.id; // Assuming the payload contains the player object
-      onCreatePlayer(playerId);
-    } else if (login.rejected.match(action)) {
-      alert(error); // Display error message
-    }
+    onLogin(playerName);
   };
 
   return (

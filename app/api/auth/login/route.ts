@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Adjust the import path as necessary
+import prisma from '@/lib/prisma';
 import { serialize } from 'cookie';
 
 export async function POST(request) {
@@ -17,9 +17,10 @@ export async function POST(request) {
     player = await prisma.player.create({
       data: { name },
     });
+  } else {
+    console.log('Player exists!')
   }
 
-  // Create a basic session token (using player ID and name for simplicity)
   const token = `${player.id}:${player.name}`;
 
   // Set a simple cookie
