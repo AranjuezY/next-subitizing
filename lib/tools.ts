@@ -11,9 +11,9 @@ const generateRandomArray = (size: number, max: number) => {
 
 
 const generateOptions = (dotsCount: number) : string[] => {
-  var array = [];
+  var array: number[] = [];
   while (array.length < 4) {
-    var ran = Math.floor(Math.random() * 6) + dotsCount - 3;
+    const ran = Math.floor(Math.random() * 6) + dotsCount - 3;
     if (array.indexOf(ran) === -1) {
       array.push(ran);
     }
