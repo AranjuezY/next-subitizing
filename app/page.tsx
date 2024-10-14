@@ -126,7 +126,7 @@ export default function Page() {
         setDataList([]);
         setGaming(true);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Unexpected error occurred:', error);
     }
   }

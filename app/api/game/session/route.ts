@@ -14,11 +14,11 @@ export async function POST(request) {
     let totalTimeSpent = 0;
     let totalScore = 0;
 
-    rounds.forEach((round: any) => {
+    rounds.forEach((round) => {
       totalTimeSpent += round.timeSpent;
     });
 
-    const roundData = rounds.map((round: any) => {
+    const roundData = rounds.map((round) => {
       const roundScore = (round.dotsCount / Math.pow(round.timeSpent, decayFactor)) * (round.isCorrect ? 1 : 0.5) * 1000;
       totalScore += roundScore;
 
@@ -46,7 +46,7 @@ export async function POST(request) {
     });
 
     return NextResponse.json(gameSession, { status: 201 });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating game session:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

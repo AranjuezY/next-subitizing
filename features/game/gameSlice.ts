@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export interface RoundData {
   roundNumber: number;
@@ -14,9 +14,10 @@ export const session = createAsyncThunk(
     try {
       const response = await axios.post('/api/game/session', { playerId, rounds });
       return response.data;
-    } catch (err: any) {
-      if (err.response && err.response.data) {
-        return rejectWithValue(err.response.data);
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ message: string }>;
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue('An unexpected error occurred.');
       }

@@ -26,7 +26,7 @@ export async function GET() {
     }));
 
     return NextResponse.json(formattedScores);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching top scores:", error);
     return NextResponse.json({ error: "Error fetching top scores." }, { status: 500 });
   }
