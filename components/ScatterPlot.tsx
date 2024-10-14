@@ -44,7 +44,7 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({ data }) => {
   const options = {
     scales: {
       x: {
-        type: "linear",
+        type: "linear" as const, // Ensure this matches the expected type
         title: {
           display: true,
           text: "Number of Dots",
@@ -53,7 +53,7 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({ data }) => {
       y: {
         title: {
           display: true,
-          text: "Time Spent (s)",
+          text: "Time Spent (ms)",
         },
       },
     },

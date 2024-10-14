@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { serialize } from 'cookie';
 
-export async function POST(request) {
+export async function POST(request: Request) {
   const { name } = await request.json();
 
   if (!name || name.trim() === '') {

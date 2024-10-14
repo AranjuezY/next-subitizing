@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (name, { rejectWithValue }) => {
+  async ({ name }: { name: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post('api/auth/login', { name });
       return response.data;

@@ -5,12 +5,12 @@ import { login } from "@/features/auth/authSlice";
 import Cookies from "js-cookie";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Timer from "@/components/Timer";
 import Options from "@/components/Options";
 import { generateOptions, generateRandomArray } from "@/lib/tools";
 import ScatterPlot, { DataPoint } from "@/components/ScatterPlot";
 import { RoundData, session } from "@/features/game/gameSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 const gridSize = 5;
 const maxGrids = gridSize * gridSize;
@@ -31,8 +31,8 @@ export default function Page() {
   const [winCounts, setWinCounts] = useState<number[]>([0, 0]);
   const [roundCounts, setRoundCounts] = useState(0);
 
-  const dispatch = useDispatch();
-  const { status, error } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { status, error } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     setHasMounted(true);
@@ -40,7 +40,7 @@ export default function Page() {
     if (authToken) {
       console.log('logged in with token:', authToken);
       setIsAuthenticated(true);
-      let [id, name] = authToken?.split(':');
+      const id = authToken?.split(':')[0];
       console.log(id);
       setPlayerId(Number(id));
     }
@@ -70,7 +70,7 @@ export default function Page() {
       return;
     }
 
-    const action = await dispatch(login(name));
+    const action = await dispatch(login({ name }));
 
     if (login.fulfilled.match(action)) {
       setPlayerId(action.payload.id);

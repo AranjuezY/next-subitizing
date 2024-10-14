@@ -14,7 +14,7 @@ const gridWidth = width - padding * 2;
 
 const GameBoard: React.FC<GameBoardProps> = ({ gridSize, randomArray, isClicked }) => {
   const [showDots, setShowDots] = useState(false);
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (isClicked) {
