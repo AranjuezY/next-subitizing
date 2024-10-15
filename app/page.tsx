@@ -134,24 +134,26 @@ export default function Page() {
 
   const ppi = window.devicePixelRatio * 96;
   const inches = 2.5;
-  const sideLength = inches * ppi;
+  //const sideLength = inches * ppi;
+  const sideLength = 360;
 
   return (isAuthenticated ?
     <div>
       {gaming ? (
-        <div className="flex flex-col items-center space-y-4 mt-10">
+        <div className="flex flex-col items-center space-y-4 mt-6">
+          <span className="text-xl font-bold text-black">{roundCounts}/20</span>
           <div
             onClick={gameBoardHandler}
             className="cursor-pointer shadow-2xl"
             style={{ width: sideLength }}>
             <GameBoard gridSize={gridSize} sideLength={sideLength} randomArray={dotsArray} isClicked={isClicked} />
           </div>
-          <Options optionList={options} width={sideLength} handleClick={optionsHandler} />
+          <Options optionList={options} width={sideLength} handleClick={optionsHandler} isReady={isClicked} />
           <Timer start={isClicked} onTimeUpdate={timerHandler} />
           <div className="flex flex-col items-center">
             <div className="flex items-center justify-around w-72">
-              <span className="text-xl font-normal text-green-500">correct: {winCounts[0]}</span>
-              <span className="text-xl font-normal text-red-500">incorrect: {winCounts[1]}</span>
+              <span className="text-xl font-bold text-green-600">correct: {winCounts[0]}</span>
+              <span className="text-xl font-bold text-red-600">incorrect: {winCounts[1]}</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-const generateRandomArray = (size: number, max: number) => {
+export const generateRandomArray = (size: number, max: number) => {
   const array: number[] = [];
   while (array.length < size) {
     const randomIndex = Math.floor(Math.random() * max);
@@ -9,8 +9,7 @@ const generateRandomArray = (size: number, max: number) => {
   return array;
 };
 
-
-const generateOptions = (dotsCount: number) : string[] => {
+export const generateOptions = (dotsCount: number): string[] => {
   var array: number[] = [];
   while (array.length < 4) {
     const ran = Math.floor(Math.random() * 6) + dotsCount - 3;
@@ -25,4 +24,9 @@ const generateOptions = (dotsCount: number) : string[] => {
   return array.map(i => i.toString());
 }
 
-export {generateRandomArray, generateOptions};
+export const calculateScore = (
+  dotsCount: number,
+  timeSpent: number,
+  decayFactor: number,
+  isCorrect: boolean) =>
+  (dotsCount / Math.pow(Math.max(timeSpent, 1), decayFactor)) * (isCorrect ? 1 : 0.5) * 1000;

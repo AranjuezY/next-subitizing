@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { calculateScore } from "@/lib/tools";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     });
 
     const roundData = rounds.map((round) => {
-      const roundScore = (round.dotsCount / Math.pow(round.timeSpent, decayFactor)) * (round.isCorrect ? 1 : 0.5) * 1000;
+      const roundScore = calculateScore(round.dotsCount, round.timeSpent, decayFactor, round.isCorrect);
       totalScore += roundScore;
 
       return {
