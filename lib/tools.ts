@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 export const generateRandomArray = (size: number, max: number) => {
   const array: number[] = [];
   while (array.length < size) {
@@ -30,3 +32,21 @@ export const calculateScore = (
   decayFactor: number,
   isCorrect: boolean) =>
   (dotsCount / Math.pow(Math.max(timeSpent, 1), decayFactor)) * (isCorrect ? 1 : 0.5) * 1000;
+
+export const SECRET_KEY: string = '8ebe61d3b3a69ba31862c5a56e8ad49c5f07dcef3c6716cbd9a7c90c409cac5e';
+
+interface DecodedToken {
+  id: string;
+  name: string;
+}
+
+export const decodeToken = (token: string): DecodedToken | null => {
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY) as DecodedToken;
+    const { id, name } = decoded;
+    return { id, name };
+  } catch (error) {
+    console.error('Invalid token:', error);
+    return null;
+  }
+};

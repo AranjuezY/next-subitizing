@@ -9,8 +9,12 @@ export default function Page() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await axios.get('/api/game/scores'); // Adjust this to your API route
-        setScores(response.data); // Assuming response.data contains the scores array
+        const response = await axios.get('/api/game/scores', {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
+        setScores(response.data);
       } catch (error) {
         console.error("Error fetching scores:", error);
       }

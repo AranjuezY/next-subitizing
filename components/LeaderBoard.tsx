@@ -26,7 +26,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ scores }) => {
         </thead>
         <tbody>
           {scores.map((player, index) => (
-            <tr key={player.id} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+            <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
               <td className="py-2 px-4">{index + 1}</td>
               <td className="py-2 px-4">{player.name}</td>
               <td className="py-2 px-4">{player.score}</td>

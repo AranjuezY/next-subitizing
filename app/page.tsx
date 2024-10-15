@@ -7,7 +7,7 @@ import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import Timer from "@/components/Timer";
 import Options from "@/components/Options";
-import { generateOptions, generateRandomArray } from "@/lib/tools";
+import { decodeToken, generateOptions, generateRandomArray } from "@/lib/tools";
 import ScatterPlot, { DataPoint } from "@/components/ScatterPlot";
 import { RoundData, session } from "@/features/game/gameSlice";
 import { useAppDispatch, useAppSelector, useMounted } from "@/lib/hooks";
@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector, useMounted } from "@/lib/hooks";
 export default function Page() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [playerId, setPlayerId] = useState<number>(0);
+  const [playerName, setPlayerName] = useState<string>('');
   const [newRound, setNewRound] = useState(true);
   const [dotsCount, setDotsCount] = useState(0);
   const [isClicked, setIsClicked] = useState<boolean>(false);
@@ -29,18 +30,27 @@ export default function Page() {
   const dispatch = useAppDispatch();
   const { status, error } = useAppSelector((state: RootState) => state.auth);
 
+  const sideLength = 360;
   const gridSize = 5;
   const maxGrids = gridSize * gridSize;
   const maxRounds = 20;
 
   useEffect(() => {
     const authToken = Cookies.get('auth');
+    console.log(authToken);
     if (authToken) {
-      console.log('logged in with token:', authToken);
-      setIsAuthenticated(true);
-      const id = authToken?.split(':')[0];
-      console.log(id);
-      setPlayerId(Number(id));
+      try {
+        const decodedData = decodeToken(authToken);
+        console.log(decodedData);
+        if (decodedData) {
+          const { id, name } = decodedData;
+          setPlayerId(Number(id));
+          setPlayerName(name);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error('Invalid token:', error);
+      }
     }
   }, []);
 
@@ -71,11 +81,12 @@ export default function Page() {
     const action = await dispatch(login({ name }));
 
     if (login.fulfilled.match(action)) {
+      console.log(action.payload);
       setPlayerId(action.payload.id);
+      setPlayerName(action.payload.name);
       setIsAuthenticated(true);
     } else if (login.rejected.match(action)) {
       console.error('Login failed:', error);
-      alert(error);
     }
   };
 
@@ -132,16 +143,14 @@ export default function Page() {
   const mounted = useMounted();
   if (!mounted) return null;
 
-  //const ppi = window.devicePixelRatio * 96;
-  //const inches = 2.5;
-  //const sideLength = inches * ppi;
-  const sideLength = 360;
-
   return (isAuthenticated ?
     <div>
       {gaming ? (
         <div className="flex flex-col items-center space-y-4 mt-6">
-          <span className="text-xl font-bold text-black">{roundCounts}/20</span>
+          <div className="flex justify-between w-72">
+            <span className="text-xl font-bold text-black">Hi, {playerName}!</span>
+            <span className="text-xl font-bold text-black">{roundCounts}/20</span>
+          </div>
           <div
             onClick={gameBoardHandler}
             className="cursor-pointer shadow-2xl"
