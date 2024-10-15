@@ -2,19 +2,18 @@ import { useEffect, useRef, useState } from "react";
 
 interface GameBoardProps {
   gridSize: number;
+  sideLength: number;
   randomArray: number[];
   isClicked: boolean
 }
 
-const width = 400;
-const height = width;
-const dotRadius = width / 40;
-const padding = 0;
-const gridWidth = width - padding * 2;
-
-const GameBoard: React.FC<GameBoardProps> = ({ gridSize, randomArray, isClicked }) => {
+const GameBoard: React.FC<GameBoardProps> = ({ gridSize, sideLength, randomArray, isClicked }) => {
   const [showDots, setShowDots] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const dotRadius = sideLength / 40;
+  const padding = 0;
+  const gridWidth = sideLength - padding * 2;
 
   useEffect(() => {
     if (isClicked) {
@@ -38,7 +37,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ gridSize, randomArray, isClicked 
     ctx.fillRect(padding, padding, gridWidth, gridWidth);
 
     if (showDots) {
-      drawGridWithDots(ctx, gridSize, padding, dotRadius, randomArray);
+      drawGridWithDots(ctx, gridSize, sideLength, padding, dotRadius, randomArray);
     } else if (!isClicked) {
       drawText(ctx, 'Click Start', canvas.width);
     }
@@ -46,7 +45,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ gridSize, randomArray, isClicked 
 
   return (
     <div>
-      <canvas ref={canvasRef} width={width} height={height} />
+      <canvas ref={canvasRef} width={sideLength} height={sideLength} />
     </div>
   )
 }
@@ -56,11 +55,12 @@ export default GameBoard;
 const drawGridWithDots = (
   ctx: CanvasRenderingContext2D,
   gridSize: number,
+  sideLength: number,
   padding: number,
   dotRadius: number,
   array: number[]
 ): void => {
-  const gridWidth = width;
+  const gridWidth = sideLength;
   const cellSize = gridWidth / gridSize;
 
   for (let rowIndex = 0; rowIndex < gridSize; rowIndex++) {

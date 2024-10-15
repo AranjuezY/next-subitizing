@@ -10,14 +10,9 @@ import Options from "@/components/Options";
 import { generateOptions, generateRandomArray } from "@/lib/tools";
 import ScatterPlot, { DataPoint } from "@/components/ScatterPlot";
 import { RoundData, session } from "@/features/game/gameSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-
-const gridSize = 5;
-const maxGrids = gridSize * gridSize;
-const maxRounds = 20;
+import { useAppDispatch, useAppSelector, useMounted } from "@/lib/hooks";
 
 export default function Page() {
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [playerId, setPlayerId] = useState<number>(0);
   const [newRound, setNewRound] = useState(true);
@@ -34,8 +29,11 @@ export default function Page() {
   const dispatch = useAppDispatch();
   const { status, error } = useAppSelector((state: RootState) => state.auth);
 
+  const gridSize = 5;
+  const maxGrids = gridSize * gridSize;
+  const maxRounds = 20;
+
   useEffect(() => {
-    setHasMounted(true);
     const authToken = Cookies.get('auth');
     if (authToken) {
       console.log('logged in with token:', authToken);
@@ -131,9 +129,12 @@ export default function Page() {
     }
   }
 
-  if (!hasMounted) {
-    return null;
-  }
+  const mounted = useMounted();
+  if (!mounted) return null;
+
+  const ppi = window.devicePixelRatio * 96;
+  const inches = 4;
+  const sideLength = inches * ppi;
 
   return (isAuthenticated ?
     <div>
@@ -141,10 +142,11 @@ export default function Page() {
         <div className="flex flex-col items-center space-y-4 mt-10">
           <div
             onClick={gameBoardHandler}
-            className="w-[400px] cursor-pointer shadow-2xl">
-            <GameBoard gridSize={gridSize} randomArray={dotsArray} isClicked={isClicked} />
+            className="cursor-pointer shadow-2xl"
+            style={{ width: sideLength }}>
+            <GameBoard gridSize={gridSize} sideLength={sideLength} randomArray={dotsArray} isClicked={isClicked} />
           </div>
-          <Options optionList={options} handleClick={optionsHandler} />
+          <Options optionList={options} width={sideLength} handleClick={optionsHandler} />
           <Timer start={isClicked} onTimeUpdate={timerHandler} />
           <div className="flex flex-col items-center">
             <div className="flex items-center justify-around w-72">
