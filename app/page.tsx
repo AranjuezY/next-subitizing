@@ -1,8 +1,7 @@
 'use client';
 import GameBoard from "@/components/GameBoard";
-import Login from "@/components/Login";
-import { login } from "@/features/auth/authSlice";
-import Cookies from "js-cookie";
+import Signin from "@/components/Signin";
+import { signin } from "@/features/auth/authSlice";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import Timer from "@/components/Timer";
@@ -36,22 +35,16 @@ export default function Page() {
   const maxRounds = 20;
 
   useEffect(() => {
-    const authToken = Cookies.get('auth');
-    console.log(authToken);
-    if (authToken) {
-      try {
-        const decodedData = decodeToken(authToken);
-        console.log(decodedData);
-        if (decodedData) {
-          const { id, name } = decodedData;
-          setPlayerId(Number(id));
-          setPlayerName(name);
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error('Invalid token:', error);
+    fetch('/api/auth/login')
+    .then(response => response.json())
+    .then(data => {
+      if (data.id && data.name) {
+        setPlayerId(Number(data.id));
+        setPlayerName(data.name);
+        setIsAuthenticated(true);
       }
-    }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
   }, []);
 
   useEffect(() => {
@@ -78,15 +71,14 @@ export default function Page() {
       return;
     }
 
-    const action = await dispatch(login({ name }));
+    const action = await dispatch(signin({ name }));
 
-    if (login.fulfilled.match(action)) {
-      console.log(action.payload);
+    if (signin.fulfilled.match(action)) {
       setPlayerId(action.payload.id);
       setPlayerName(action.payload.name);
       setIsAuthenticated(true);
-    } else if (login.rejected.match(action)) {
-      console.error('Login failed:', error);
+    } else if (signin.rejected.match(action)) {
+      console.error('Signin failed:', error);
     }
   };
 
@@ -179,8 +171,8 @@ export default function Page() {
       )}
     </div>
     :
-    <Login
-      onLogin={createPlayerHandler}
+    <Signin
+      onSignin={createPlayerHandler}
       status={status}
       error={error}
     />

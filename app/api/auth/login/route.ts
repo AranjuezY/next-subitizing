@@ -1,42 +1,20 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { serialize } from 'cookie';
-import jwt from 'jsonwebtoken';
-import { SECRET_KEY } from '@/lib/tools';
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { decodeToken } from "@/lib/tools";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
+  const cookieStore = cookies();
+  const authToken = cookieStore.get('auth')?.value;
+
+  if (!authToken) {
+    return NextResponse.json({ error: "Authentication token missing" }, { status: 401 });
+  }
+
   try {
-    const { name } = await request.json();
-
-    if (!name || name.trim() === '') {
-      return NextResponse.json({ message: 'Name is required.' }, { status: 400 });
-    }
-
-    // Check if the player exists
-    let player = await prisma.player.findUnique({ where: { name } });
-
-    if (!player) {
-      player = await prisma.player.create({
-        data: { name },
-      });
-    } else {
-      return NextResponse.json({ message: 'Player already exists.' }, { status: 409 });
-    }
-
-    const token = jwt.sign({ id: player.id, name: player.name }, SECRET_KEY);
-
-    const cookie = serialize('auth', token, {
-      path: '/'
-    });
-
-    // Return the player data and set the cookie
-    return NextResponse.json(player, {
-      status: 200,
-      headers: {
-        'Set-Cookie': cookie,
-      },
-    });
-  } catch (error) {
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    const decodedData = decodeToken(authToken);
+    return NextResponse.json(decodedData);
+  } catch (error: unknown) {
+    console.error('Invalid token:', error);
+    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 }

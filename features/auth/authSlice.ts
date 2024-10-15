@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
-export const login = createAsyncThunk(
-  'auth/login',
+export const signin = createAsyncThunk(
+  'auth/signin',
   async ({ name }: { name: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('api/auth/login', { name });
+      const response = await axios.post('api/auth/signin', { name });
       return response.data;
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
@@ -40,15 +40,15 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(signin.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(signin.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(signin.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });

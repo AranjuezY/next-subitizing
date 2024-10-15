@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
-interface LoginProps {
-  onLogin: (playerName: string) => void;
+interface SigninProps {
+  onSignin: (playerName: string) => void;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, status, error }) => {
+const Signin: React.FC<SigninProps> = ({ onSignin, status, error }) => {
   const [playerName, setPlayerName] = useState<string>('');
 
   const handleCreatePlayer = async () => {
-    onLogin(playerName);
+    onSignin(playerName);
   };
 
   return (
@@ -34,4 +34,4 @@ const Login: React.FC<LoginProps> = ({ onLogin, status, error }) => {
   );
 }
 
-export default Login;
+export default Signin;
