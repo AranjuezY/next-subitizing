@@ -133,7 +133,7 @@ export default function Page() {
   if (!mounted) return null;
 
   const ppi = window.devicePixelRatio * 96;
-  const inches = 4;
+  const inches = 2.5;
   const sideLength = inches * ppi;
 
   return (isAuthenticated ?
