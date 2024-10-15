@@ -132,8 +132,8 @@ export default function Page() {
   const mounted = useMounted();
   if (!mounted) return null;
 
-  const ppi = window.devicePixelRatio * 96;
-  const inches = 2.5;
+  //const ppi = window.devicePixelRatio * 96;
+  //const inches = 2.5;
   //const sideLength = inches * ppi;
   const sideLength = 360;
 
